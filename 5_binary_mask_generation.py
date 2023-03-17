@@ -1,35 +1,3 @@
-
-Skip to content
-Pull requests
-Issues
-Codespaces
-Marketplace
-Explore
-@ibrahimhalilbayat
-ibrahimhalilbayat /
-binary_mask_generation
-Public
-
-Cannot fork because you own this repository and are not a member of any organizations.
-
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-
-    Settings
-
-binary_mask_generation/binary_mask_from_json.py /
-@ibrahimhalilbayat
-ibrahimhalilbayat Add files via upload
-Latest commit 8a112cc Jan 10, 2023
-History
-1 contributor
-47 lines (35 sloc) 1.34 KB
 """"
 This script is used to create binary masks from json file
 obstacle: 0
@@ -77,20 +45,3 @@ for data in os.listdir(JSON_PATH):
     cv2.imwrite(MASK_PATH+file_name+'m.jpeg', mask)
     
     print(file_name+'.jpeg is SAVED to ', MASK_PATH)
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-
-    Terms
-    Privacy
-    Security
-    Status
-    Docs
-    Contact GitHub
-    Pricing
-    API
-    Training
-    Blog
-    About
-
-binary_mask_generation/binary_mask_from_json.py at main · ibrahimhalilbayat/binary_mask_generation

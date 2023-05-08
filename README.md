@@ -6,3 +6,4 @@
 * 5_binary_mask_generation.py: Generating binary masks to be used in semantic segmentation under a folder named 'masks' from json files gathered under a folder named 'json'
 * 6_rotate_image_based_on_coordinates.py: Rotating image based on the four coordinates given by the user. 
 * 7_generate_txt_from_json.py: Generating txt files to be used in YOLO. Adjust the path that contains json files. Json files should be generated via labelme program.
+*  8_basic_reading_webcam.py: Basic reading the frame from webcam and showing the stream.

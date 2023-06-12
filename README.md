@@ -8,3 +8,4 @@
 * 7_generate_txt_from_json.py: Generating txt files to be used in YOLO. Adjust the path that contains json files. Json files should be generated via labelme program.
 * 8_basic_reading_webcam.py: Basic reading the frame from webcam and showing the stream.
 * 9_create_txt_of_yolov8_results.py: Creating txt files of yolov8 results in YOLO format. 
+* 10_class_names_enum.py: Creating enum of string class names

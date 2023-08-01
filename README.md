@@ -19,5 +19,7 @@
 * 9_create_txt_of_yolov8_results.py: Creating txt files of yolov8 results in YOLO format.
 ## Generating enum for Class Names: 
 * 10_class_names_enum.py: Creating enum of string class names.
-## Generate tct 
+## Generate json File from txt Files:  
 * 11_generate_txt_from_json.py: Creating json files by using txt and image files.
+## Reading Data from MAt file and Save it to Json file
+* 12_read_from_mat_and_save_to_json: Reading mat extensioned file and save the data as json format

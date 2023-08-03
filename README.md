@@ -23,3 +23,5 @@
 * 11_generate_txt_from_json.py: Creating json files by using txt and image files.
 ## Reading Data from MAt file and Save it to Json file
 * 12_read_from_mat_and_save_to_json: Reading mat extensioned file and save the data as json format
+## Saving a Numpy Array as Json then Read it as Numpy
+* 13_read_write_json.py

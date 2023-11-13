@@ -1,95 +1,52 @@
 import json
-import base64
-from PIL import Image
-import os
+from os import listdir, chdir
+from os.path import isfile, join
 
-def get_image_info(image_path):
-	with Image.open(image_path) as image:
-		width, heigth =image.size
-	with open(image_path, "rb") as image_file:
-		encoded_image_data = base64.b64encode(image_file.read()).decode("utf-8")
-	return width, heigth, encoded_image_data
+# Please change the following path accordingly
+my_path = ""
 
-def parse_txt_line(line):
-	tokens=line.strip().split()
-	return {
-		'etiquette': int(tokens[0]),
-		'x_c' : float(tokens[1]),
-		'y_c' : float(tokens[2]),
-		'w' : float(tokens[3]),
-		'h' : float(tokens[4])
-	}
+chdir(my_path)
+onlyfiles = [f for f in listdir(my_path) if isfile(join(my_path, f))]
 
-def read_txt_file(input_txt_path):
-	data = []
-	with open(input_txt_path,'r') as file:
-		for line in file:
-			if line.strip():
-				parsed_data = parse_txt_line(line)
-				data.append(parsed_data)
-	return data
+for file_name in onlyfiles:
+    if file_name.endswith(".json"):
+        with open(file_name) as f:
+            try:
+                data = json.load(f)
+            except json.decoder.JSONDecodeError as e:
+                print(f"Error reading JSON from {file_name}: {e}")
+                continue  # Skip to the next file
 
-def convert_data_to_shapes(data,im_w, im_h):
-	shapes = []
-	labels = ['class_1', 'class_2', 'class_3', 'class_4', 'class_5', 'class_6']
+        save_name = file_name.split(".json")[0] + ".txt"
 
-	for item in data:
-		x_c, y_c, w, h= item['x_c']*im_w, item['y_c']*im_h, item['w']*im_w, item['h']*im_h
-		x1 = x_c - w / 2
-		y1 = y_c - h / 2
-		x2 = x_c + w / 2
-		y2 = y_c + h /2
+        save_file = open(save_name, "w")
 
-		shape = {
-			"label": labels[item['etiquette']],
-			"points": [[x1,y1], [x2,y2]],
-			"group_id" :None,
-			"shape_type": "rectangle",
-			"flags":{}
-		}			
-		shapes.append(shape)
-	return shapes
+        print(save_name)
+        im_h = data["imageHeight"]
+        im_w = data["imageWidth"]
+        shapes = data["shapes"]
+        for shape in shapes:
+            label = shape["label"]
+            p1, p2 = shape["points"]
 
-def create_json_file (output_json_path, shapes,image_path,image_data,image_width,image_heigth):
-	json_data = {
-		"version":"4.6.0",
-		"flags":{},
-		"shapes":shapes,
-		"imagePath":image_path,
-		"imageData":image_data,
-		"imageHeigth": image_width,
-		"imageWidth": image_heigth
-	}
-	with open(output_json_path, 'w') as file:
-		json.dump(json_data, file, indent=4)
+            if label == "lotr":
+                etiquette = 0
+            elif label == "frodo":
+                etiquette = 1
+            else:
+                etiquette = -1
 
+            x1, y1 = p1
+            x2, y2 = p2
 
-for file in os.listdir('detect'):
-	if file.split('.')[1] == 'txt':
-		input_txt_path="detect/" + file
+            w = abs(x1 - x2)
+            h = abs(y1 - y2)
+            x_c = abs((x1 + x2) / 2)
+            y_c = abs((y1 + y2) / 2)
 
-		output_json_path='detect/' + file.split('.')[0] + '.json'
-		print("FILE: ", file)
+            w = w / im_w
+            h = h / im_h
+            x_c = x_c / im_w
+            y_c = y_c / im_h
 
-		if file.split('.')[0] + '.jpeg' in os.listdir('detect'):
-			image_path='detect/' +  file.split('.')[0] + '.jpeg'
-		
-		elif file.split('.')[0] + '.jpg' in os.listdir('detect'):
-			image_path='detect/' +  file.split('.')[0] + '.jpg'
-		
-		else:
-			image_path='detect/' +  file.split('.')[0] + '.png'
-
-
-
-		#gets image information
-		image_width, image_heigth, image_data = get_image_info(image_path)
-
-		#read data from txt file
-		data = read_txt_file(input_txt_path)
-
-		#convert data to shapes
-		shapes=convert_data_to_shapes(data,image_width,image_heigth)
-
-		#create json file 
-		create_json_file(output_json_path,shapes,image_path,image_data,image_width,image_heigth)
+            print(etiquette, x_c, y_c, w, h, file=save_file)

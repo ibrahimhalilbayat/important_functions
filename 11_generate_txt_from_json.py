@@ -1,52 +1,87 @@
+'''
+Converting json files to txt files in YOLO format 
+by 
+Dark Lord İbrahim Halil BAYAT
+Fearless, Nameless, Formless and other -less stuff
+
+-----------------------------------------------------
+Steps:
+    1- Save this python file 
+    2- Change 'THE_PATH' variable 
+    3- Change the label names based on IDs
+    4- Go and have a happy life
+'''
+
 import json
-from os import listdir, chdir
-from os.path import isfile, join
+import os
+import base64
+from PIL import Image
 
-# Please change the following path accordingly
-my_path = ""
+def convert_txt_to_json(txt_file_path):
+    with open(txt_file_path, 'r') as txt_file:
+        lines = txt_file.readlines()
 
-chdir(my_path)
-onlyfiles = [f for f in listdir(my_path) if isfile(join(my_path, f))]
+    image_path = txt_file_path.split('.')[0] + ".png"
+    with open(image_path, "rb") as image_file:
+        image_data = base64.b64encode(image_file.read()).decode("utf-8")
 
-for file_name in onlyfiles:
-    if file_name.endswith(".json"):
-        with open(file_name) as f:
-            try:
-                data = json.load(f)
-            except json.decoder.JSONDecodeError as e:
-                print(f"Error reading JSON from {file_name}: {e}")
-                continue  # Skip to the next file
+    # Get image dimensions
+    with Image.open(image_path) as img:
+        image_width, image_height = img.size
 
-        save_name = file_name.split(".json")[0] + ".txt"
+    data = {
+        "version": "3.16.7",
+        "flags": {},
+        "shapes": [],
+        "imagePath": os.path.basename(image_path),
+        "imageData": image_data,
+        "imageHeight": image_height,
+        "imageWidth": image_width,
+        "lineColor": [0, 255, 0, 128],
+        "fillColor": [255, 0, 0, 128]
+    }
 
-        save_file = open(save_name, "w")
+    for line in lines:
+        values = line.strip().split()
 
-        print(save_name)
-        im_h = data["imageHeight"]
-        im_w = data["imageWidth"]
-        shapes = data["shapes"]
-        for shape in shapes:
-            label = shape["label"]
-            p1, p2 = shape["points"]
+        if len(values) < 5:
+            print(f"Skipping invalid line: {line}")
+            continue
 
-            if label == "lotr":
-                etiquette = 0
-            elif label == "frodo":
-                etiquette = 1
-            else:
-                etiquette = -1
+        try:
+            label_id = int(values[0])
+            x_c = float(values[1])
+            y_c = float(values[2])
+            w = float(values[3])
+            h = float(values[4])
+        except ValueError as e:
+            print(f"Error processing line: {line}\n{e}")
+            continue
 
-            x1, y1 = p1
-            x2, y2 = p2
+        x1 = int((x_c - w / 2) * data["imageWidth"])
+        y1 = int((y_c - h / 2) * data["imageHeight"])
+        x2 = int((x_c + w / 2) * data["imageWidth"])
+        y2 = int((y_c + h / 2) * data["imageHeight"])
 
-            w = abs(x1 - x2)
-            h = abs(y1 - y2)
-            x_c = abs((x1 + x2) / 2)
-            y_c = abs((y1 + y2) / 2)
+        shape = {
+            "label": "elf" if label_id == 0 else None,
+            "line_color": None,
+            "fill_color": None,
+            "points": [[x1, y1], [x2, y2]],
+            "shape_type": "rectangle",
+            "flags": {}
+        }
 
-            w = w / im_w
-            h = h / im_h
-            x_c = x_c / im_w
-            y_c = y_c / im_h
+        data["shapes"].append(shape)
 
-            print(etiquette, x_c, y_c, w, h, file=save_file)
+    json_file_path = txt_file_path.split('.')[0] + ".json"
+    with open(json_file_path, 'w') as json_file:
+        json.dump(data, json_file, indent=2)
+
+if __name__ == "__main__":
+    THE_PATH = ''
+    for txt_file in os.listdir(THE_PATH):
+        if txt_file.endswith('.txt'):
+            if txt_file.replace('.txt', '.png') in os.listdir(THE_PATH):
+                txt_file_path = os.path.join(THE_PATH, txt_file)
+                convert_txt_to_json(txt_file_path)

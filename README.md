@@ -20,8 +20,12 @@
 ## Generating enum for Class Names: 
 * 10_class_names_enum.py: Creating enum of string class names.
 ## Generate json File from txt Files:  
-* 11_generate_txt_from_json.py: Creating json files by using txt and image files.
+* 11_generate_json_from_json.py: Creating json files by using txt and image files.
 ## Reading Data from MAt file and Save it to Json file
 * 12_read_from_mat_and_save_to_json: Reading mat extensioned file and save the data as json format
 ## Saving a Numpy Array as Json then Read it as Numpy
 * 13_read_write_json.py
+## Changing the Name of Label
+* 14_change_label_name.py
+## Creating Train and Validation Folders for YOLO
+* 15_create_train_test_data.py

@@ -1,5 +1,5 @@
 '''
-Script to change the label names 
+Script to create train and test sets
 by 
 Dark Lord İbrahim Halil BAYAT
 Fearless, Nameless, Formless and other -less stuff

@@ -1,10 +1,6 @@
 import can
 
-
-
-
-
-desired_ids = [167576099, 167576100]
+desired_ids = [1, 2]
 
 can_filters = [{"can_id": can_id, "can_mask": 0x1FFFFFFF} for can_id in desired_ids]
 
